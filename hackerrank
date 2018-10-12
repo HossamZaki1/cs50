@@ -1,0 +1,105 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+public class Solution {
+    // Complete the formingMagicSquare function below.
+    static int formingMagicSquare(int[][] s) {
+        int columnCount[] = {0,0,0};
+        int rowCount[] = {0,0,0};
+        int Change = 0;
+        for(int x = 0; x < 3; x++){
+            for(int a = 0 ; a < 3 ; a++){
+                columnCount[x] += s[a][x];
+                rowCount[x] += s[x][a];
+            }
+        }
+        
+        for(int x = 0; x < 3 ; x++){
+            int previousValue = s[x][x];
+            if(columnCount[x] < 15 && rowCount[x] < 15){
+                if(columnCount[x] == rowCount[x]){
+                    s[x][x] += (15 - columnCount[x]);
+                }else if(columnCount[x] < rowCount[x]){
+                    s[x][x] += (15 - rowCount[x]);
+                }else if(rowCount[x] < columnCount[x]){
+                    s[x][x] += (15 - columnCount[x]);
+                }
+            }else if(columnCount[x] == rowCount[x] && columnCount[x] > 15){
+                s[x][x] += (15 - columnCount[x]);
+            }else if(columnCount[x] > 15 && columnCount[x] > rowCount[x]){
+                s[x][x] += (15 - columnCount[x]);
+            }else if(rowCount[x] > 15 && columnCount[x] < rowCount[x]){
+                s[x][x] += (15 - rowCount[x]);
+            }
+            
+            Change += Math.abs(previousValue - s[x][x]);
+            
+        }
+        
+        columnCount[0] = 0;
+        columnCount[1] = 0;
+        columnCount[2] = 0;
+        
+        rowCount[0] = 0;
+        rowCount[1] = 0;
+        rowCount[2] = 0;
+        for(int x = 0; x < 3; x++){
+                for(int a = 0 ; a < 3 ; a++){
+                    columnCount[x] += s[a][x];
+                    rowCount[x] += s[x][a];
+                }
+            }
+        for(int x = 0 ; x < 3 ; x++){
+            if(columnCount[x] != 15){
+                for(int y = 0 ; y < 3 ; y++){
+                    if(rowCount[y] != 15){
+                        if(columnCount[x] == rowCount[y]){
+                            Change+= Math.abs(15-columnCount[x]);
+                            s[y][x] += (15-columnCount[x]);
+                        }else if(columnCount[x] > rowCount[y]){
+                            Change+= Math.abs(15-columnCount[x]);
+                            s[y][x] += (15-columnCount[x]);
+                        }else if(rowCount[y] > columnCount[x]){
+                            Change+= Math.abs(15-rowCount[y]);
+                            s[y][x] += (15-rowCount[y]);
+                        }
+                    }
+                }
+            }
+        }
+        return Change;
+
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int[][] s = new int[3][3];
+
+        for (int i = 0; i < 3; i++) {
+            String[] sRowItems = scanner.nextLine().split(" ");
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+            for (int j = 0; j < 3; j++) {
+                int sItem = Integer.parseInt(sRowItems[j]);
+                s[i][j] = sItem;
+            }
+        }
+
+        int result = formingMagicSquare(s);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
